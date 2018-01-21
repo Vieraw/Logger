@@ -1,0 +1,20 @@
+{
+    "name": "Vieraw/Logger",
+    "authors":
+        [
+            {
+                "name": "Vieraw"
+            }
+        ],
+    "autoload":
+    {
+        "psr-4":
+        {
+            "Log\\": "Log/"
+        }
+    },
+    "require":
+    {
+        "psr/log": "^1.0"
+    }
+}

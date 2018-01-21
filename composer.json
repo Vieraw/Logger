@@ -1,0 +1,21 @@
+{
+    "name": "Vieraw/Logger",
+    "authors":
+        [
+            {
+                "name": "Vieraw",
+                "email": "vieraw@quissa.pw"
+            }
+        ],
+    "autoload":
+    {
+        "psr-4":
+        {
+            "Log\\": "Log/"
+        }
+    },
+    "require":
+    {
+        "psr/log": "1.0"
+    }
+}

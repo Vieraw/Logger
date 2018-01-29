@@ -3,11 +3,26 @@ include_once 'vendor/autoload.php';
 
 $loggers = new SplObjectStorage();
 
-$loggers->attach(new Log\Loggers\FileLogger([
-    'path' => 'default.log',
-    'levels' => ['error']
+$loggers->attach(new Log\Loggers\DatabaseLogger([
+    'db' => (function ()
+    {
+        $pdo = new \PDO('mysql:host=localhost;dbname=db;', 'username', 'password');
+        $pdo->exec('set names utf-8');
+        return $pdo;
+    })(),
+    'table' => 'logs'
 ]));
 
+$loggers->attach(new Log\Loggers\FileLogger([
+    'path' => 'default.log'
+]));
+
+$loggers->attach(new Log\Loggers\MailNativeLogger([
+    'to' => 'email@mail.com',
+    'subject' => 'MailLoggerError',
+    'from' => 'from@mail.com',
+    'levels' => ['error']
+]));
 $log = new Log\Logger($loggers);
 
 $log->info("Info message");

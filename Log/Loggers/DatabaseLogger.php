@@ -10,21 +10,27 @@ namespace Log\Loggers;
 
 class DatabaseLogger extends Base
 {
-    public $dsn;
-    public $username;
-    public $password;
     public $table;
-    private $db;
+    /**
+     * @var \PDO
+     */
+    protected $db;
+
+    public function setDb($value)
+    {
+        if (!$value instanceof \PDO)
+        {
+            throw new \InvalidArgumentException('');
+        }
+        $this->db = $value;
+    }
 
     /**
-     * DatabaseLogger constructor.
-     * @param array $attributes
-     * @throws \ReflectionException
+     * @return \PDO
      */
-    public function __construct(array $attributes = [])
+    public function getDb()
     {
-        parent::__construct($attributes);
-        $this->db = new \PDO($this->dsn, $this->username, $this->password);
+        return $this->db;
     }
 
     /**
@@ -34,17 +40,16 @@ class DatabaseLogger extends Base
      */
     public function log($level, $message, array $context = [])
     {
-        $data =
+        $sth = $this->getDb()->prepare(
+            'INSERT INTO ' . $this->table . ' (date, level, message, context) ' .
+            'VALUES (:date, :level, :message, :context)'
+        );
+        $sth->execute(
         [
             'date' => $this->getDate(),
             'level' => $level,
             'message' => $message,
             'context' => $this->stringify($context)
-        ];
-        $sth = $this->db->prepare(
-            'INSERT INTO ' . $this->table . ' (date, level, message, context) ' .
-            'VALUES (:date, :level, :message, :context)'
-        );
-        $sth->execute($data);
+        ]);
     }
 }

@@ -1,7 +1,7 @@
 # Logger
 PSR-3 Logger
 ## Installation
-Install the latest version with
+Install the latest version with. \
 In the composer.json add sections:
 ```bash
     "repositories":
@@ -35,7 +35,7 @@ $ composer install
     $loggers->attach(new Log\Loggers\DatabaseLogger([
         'db' => (function () {
             $pdo = new \PDO('mysql:host=localhost;dbname=db;', 'username', 'password');
-            $pdo->exec('set names utf-8');
+            $pdo->exec('set names utf8');
             return $pdo;
         })(),
         'table' => 'logs'

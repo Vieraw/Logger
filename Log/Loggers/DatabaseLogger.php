@@ -16,11 +16,15 @@ class DatabaseLogger extends Base
      */
     protected $db;
 
+    /**
+     * @param $value
+     * @throws \InvalidArgumentException
+     */
     public function setDb($value)
     {
         if (!$value instanceof \PDO)
         {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException('To connect to the database should be used \PDO');
         }
         $this->db = $value;
     }
@@ -40,16 +44,23 @@ class DatabaseLogger extends Base
      */
     public function log($level, $message, array $context = [])
     {
-        $sth = $this->getDb()->prepare(
-            'INSERT INTO ' . $this->table . ' (date, level, message, context) ' .
-            'VALUES (:date, :level, :message, :context)'
-        );
-        $sth->execute(
+        $this->execute(
         [
             'date' => $this->getDate(),
             'level' => $level,
             'message' => $message,
             'context' => $this->stringify($context)
         ]);
+    }
+
+    /**
+     * @param array $data
+     */
+    protected function execute(array $data)
+    {
+        $keys = array_keys($data);
+        $sth = $this->getDb()->prepare('INSERT INTO ' . $this->table .
+            ' (' . \implode(', ', $keys) . ') VALUES ( ' . \implode(', :', $keys) . ')');
+        $sth->execute($data);
     }
 }

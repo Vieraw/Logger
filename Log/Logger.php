@@ -15,11 +15,21 @@ class Logger extends AbstractLogger
 {
     private $loggers;
 
+    /**
+     * Logger constructor.
+     * @param \Iterator $loggers
+     */
     public function __construct(\Iterator $loggers)
     {
         $this->loggers = $loggers;
     }
 
+    /**
+     * @param mixed $level
+     * @param string $message
+     * @param array $context
+     * @return null|void
+     */
     public function log($level, $message, array $context = [])
     {
         foreach ($this->loggers as $logger)

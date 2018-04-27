@@ -65,6 +65,24 @@ abstract class Base extends AbstractLogger
     }
 
     /**
+     * @param $message
+     * @param array $context
+     * @return string
+     */
+    protected function interpolate($message, array $context = [])
+    {
+        $replace = [];
+        foreach ($context as $key => $val)
+        {
+            if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString')))
+            {
+                $replace['{' . $key . '}'] = $val;
+            }
+        }
+        return strtr($message, $replace);
+    }
+
+    /**
      * @param $name
      * @return mixed
      * @throws \Exception

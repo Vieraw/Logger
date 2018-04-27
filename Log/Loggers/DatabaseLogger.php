@@ -48,7 +48,7 @@ class DatabaseLogger extends Base
         [
             'date' => $this->getDate(),
             'level' => $level,
-            'message' => $message,
+            'message' => $this->interpolate($message, $context),
             'context' => $this->stringify($context)
         ]);
     }

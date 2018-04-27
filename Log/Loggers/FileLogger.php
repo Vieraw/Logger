@@ -40,7 +40,7 @@ class FileLogger extends Base
             [
                 '{date}' => $this->getDate(),
                 '{level}' => $level,
-                '{message}' => $message,
+                '{message}' => $this->interpolate($message, $context),
                 '{context}' => $this->stringify($context)
             ])) . PHP_EOL, FILE_APPEND);
     }

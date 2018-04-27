@@ -1,16 +1,14 @@
 <?php
 include_once 'vendor/autoload.php';
 
+use Psr\Log\LogLevel;
+
 try
 {
     $loggers = new SplObjectStorage();
 
     $loggers->attach(new Log\Loggers\DatabaseLogger([
-        'db' => (function () {
-            $pdo = new \PDO('mysql:host=localhost;dbname=db;', 'username', 'password');
-            $pdo->exec('set names utf8');
-            return $pdo;
-        })(),
+        'db' => new \PDO('mysql:host=localhost;dbname=db;', 'username', 'password', [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']),
         'table' => 'logs'
     ]));
 
@@ -22,7 +20,7 @@ try
         'to' => 'email@mail.com',
         'subject' => 'MailLoggerError',
         'from' => 'from@mail.com',
-        'levels' => ['error']
+        'levels' => [LogLevel::ERROR]
     ]));
     $log = new Log\Logger($loggers);
 

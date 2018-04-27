@@ -26,7 +26,7 @@ class MailNativeLogger extends Base
             [
                 '{date}' => $this->getDate(),
                 '{level}' => $level,
-                '{message}' => $message,
+                '{message}' => $this->interpolate($message, $context),
                 '{context}' => $this->stringify($context)
             ])) . PHP_EOL);
     }
@@ -36,7 +36,7 @@ class MailNativeLogger extends Base
      */
     protected function send($content)
     {
-        $contentType = $this->getContentType() ?: ($this->isHtml($content) ? 'text/html' : 'text/plain');
+        $contentType = $this->getContentType() ?: $this->isHtml($content) ? 'text/html' : 'text/plain';
 
         if ($contentType !== 'text/html')
         {
@@ -55,7 +55,6 @@ class MailNativeLogger extends Base
 
         $parameters = implode(' ', $this->parameters);
 
-        var_dump($this->headers);
         foreach ($this->to as $to)
         {
             \mail($to, $subject, $content, $headers, $parameters);
@@ -164,6 +163,7 @@ class MailNativeLogger extends Base
 
     /**
      * @param $value
+     * @throws \InvalidArgumentException
      */
     public function setFrom($value)
     {
@@ -176,6 +176,6 @@ class MailNativeLogger extends Base
      */
     protected function isHtml($data)
     {
-        return \substr($data, 0, 1) === '<';
+        return $data[0] === '<';
     }
 }
